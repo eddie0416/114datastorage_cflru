@@ -8,7 +8,10 @@ __pycache__/
 
 traces/
 traces_cleaned/
-
+buffer_cache_trace/
+buffer_cache_trace_cleaned/
+swap_system_traces/
+swap_system_traces_cleaned/
 # Distribution / packaging
 .Python
 build/

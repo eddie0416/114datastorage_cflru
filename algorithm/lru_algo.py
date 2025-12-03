@@ -57,5 +57,5 @@ class LRUAlgorithm:
             # 3. 放入快取 (會自動放到尾端 MRU)
             self.cache_map[page_id] = new_page
 
-        # 回傳給 Framework (您)
+        # 回傳給 Framework
         return is_hit, victim

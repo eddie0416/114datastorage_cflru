@@ -1,7 +1,9 @@
-from lru_algo import LRUAlgorithm
-from cflru import CFLRUAlgorithm
+from algorithm.lru_algo import LRUAlgorithm
+from algorithm.cflru import CFLRUAlgorithm
+from algorithm.beladys_min_algo import BeladyMINAlgorithm
 import csv
-from tqdm import tqdm  # pip install tqdm
+from tqdm import tqdm 
+from utils import analyze_trace
 
 def test_framework(algo, csv_path, verbose=False):
     """
@@ -25,7 +27,7 @@ def test_framework(algo, csv_path, verbose=False):
     except FileNotFoundError:
         print(f"Error: 找不到檔案 {csv_path}")
         return
-
+    algo.trace = trace # 對應belady min(因為需要未來資訊)
     # 統計變數
     total_miss = 0
     total_cost = 0
@@ -72,14 +74,41 @@ def test_framework(algo, csv_path, verbose=False):
     print(f"Miss Rate: {total_miss/total_access:.2%}")
     print(f"Total Cost: {total_cost}")
     print(f"Flash Writes: {flash_writes}")
-
+'''
 if __name__ == "__main__":
-    csv_file_path = r"traces_cleaned\valgrind\trace_tr.csv"
-    
+    csv_file_path = 'traces_cleaned/valgrind/trace_du.csv'
+    result = analyze_trace(csv_file_path) # {'mem_used_mb': 13.734375, 'working_set_size': 3516, 'total': 757360, 'instruction': 0, 'read': 697439, 'write': 59921}
+
     # 情境 1: 跑大數據實驗 (關閉 verbose，顯示進度條)
     # 這裡的 Capacity 設大一點比較符合真實 gcc 的規模
     print("--- Running Full Simulation ---")
-    algo = CFLRUAlgorithm(capacity=30) 
+    algo = CFLRUAlgorithm(capacity=10) 
     test_framework(algo, csv_file_path, verbose=False)
 
     print("\n" + "="*50 + "\n")
+'''
+if __name__ == "__main__":
+    # 1. 指定 Trace 檔案與分析
+    csv_file_path = 'swap_system_traces_cleaned/dataset/mcf.csv'
+    result = analyze_trace(csv_file_path)
+
+    # 2. 定義三個測試級距 (0.1%, 1%, 10%)
+    # 這些比例是為了適應 Trace 的區域性，您也可以試試 [0.01, 0.05, 0.1]
+    ratios = [0.001, 0.01, 0.1] 
+
+    print("\n--- Running Scientific Simulation ---")
+
+    for r in ratios:
+        # 動態計算 Capacity
+        cap = int(result['working_set_size'] * r)
+        
+        # 安全保護：避免 capacity 太小 (例如變成 0 或 1)
+        if cap < 5: 
+            cap = 5 
+        
+        print(f"\n{'='*20} Testing Ratio {r:.1%} (Capacity={cap}) {'='*20}")
+
+        # --- 第二跑：CFLRU (實驗組) ---
+        # 依據論文建議，Window Size 設為 Cache 的 1/4 (0.25)
+        algo = BeladyMINAlgorithm(capacity=cap) 
+        test_framework(algo, csv_file_path, verbose=False)
