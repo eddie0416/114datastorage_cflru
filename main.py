@@ -62,7 +62,7 @@ def test_framework(algo, csv_path, verbose=False):
             victim_info = f"Evicted: {victim}" if victim else "No Eviction"
             
             print(f"[{op} {pid}]: {status}. {victim_info}")
-            # 如果 Cache 太大，印出來會很亂，建議只在小容量測試時印出內容
+            
             if algo.capacity <= 20: 
                 print(f"   Current Cache: {list(algo.cache.values())}")
             print("-" * 30)
@@ -93,7 +93,7 @@ if __name__ == "__main__":
     result = analyze_trace(csv_file_path)
 
     # 2. 定義三個測試級距 (0.1%, 1%, 10%)
-    # 這些比例是為了適應 Trace 的區域性，您也可以試試 [0.01, 0.05, 0.1]
+    # 這些比例是為了適應 Trace 的區域性 [0.01, 0.05, 0.1]
     ratios = [0.001, 0.01, 0.1] 
 
     print("\n--- Running Scientific Simulation ---")
