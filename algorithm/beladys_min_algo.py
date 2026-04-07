@@ -14,7 +14,7 @@ class Page:
 class BeladyMINAlgorithm:
     """
     Belady's MIN / OPT
-    介面完全比照 LRU:
+    介面比照 LRU:
       - __init__(capacity)
       - access_page(page_id, is_write) -> (is_hit, victim_page)
 
