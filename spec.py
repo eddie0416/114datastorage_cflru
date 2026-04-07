@@ -20,7 +20,7 @@ class ReplacementAlgorithm:
         - is_hit: True 代表命中, False 代表 Miss
         - victim_page: 如果發生置換(Eviction)，回傳被踢掉的 Page 物件；否則回傳 None
         """
-        raise NotImplementedError("組員們，請實作這個函式！")
+        raise NotImplementedError("請實作這個函式！")
 
     def get_name(self):
         """回傳演算法名稱"""
