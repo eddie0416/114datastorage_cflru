@@ -1,7 +1,6 @@
 #用於清理buffer cache的data
 import os
 
-# ====== 你只需要改這裡 ======
 INPUT_PATH = "buffer_cache_trace/FileSystemBufferCache/WebSearch3.spc"          # 原始 trace 路徑
 OUTPUT_PATH = "buffer_cache_trace_cleaned/WebSearch3.csv"   # 輸出路徑
 
