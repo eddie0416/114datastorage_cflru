@@ -1,9 +1,5 @@
 import collections
 
-# ==========================================
-# CFLRU 演算法實作 (符合 Framework 介面)
-# ==========================================
-
 class Page:
     """基本頁面物件"""
     def __init__(self, page_id, is_dirty=False):
@@ -19,13 +15,13 @@ class CFLRUAlgorithm:
         # OrderedDict: 右邊是 MRU (最新)，左邊是 LRU (最舊)
         self.cache = collections.OrderedDict() 
         
-        # CFLRU 特有參數
+        # CFLRU 參數
         self.mode = mode # 'static' or 'dynamic'
         # 初始視窗大小 (依據論文建議，約為 Cache 的 1/4 或 1/2)
         self.window_size = int(capacity * window_size_ratio)
         
         # --- Dynamic 調整專用參數 (僅供內部演算法調整視窗使用) ---
-        # 注意：這些不是給 Framework 計分用的，是給演算法自己「爬山」用的
+        # 注意：這些不是給 Framework 計分用的，是給演算法hill climb
         self.dynamic_period = dynamic_period
         self.op_count = 0
         self.prev_period_cost = float('inf')
@@ -66,7 +62,7 @@ class CFLRUAlgorithm:
             
             # 檢查容量
             if len(self.cache) >= self.capacity:
-                victim = self.evict() # 呼叫踢人邏輯
+                victim = self.evict() # 呼叫evict邏輯
             
             # 建立新頁面並加入 MRU
             new_page = Page(page_id, is_dirty=is_write)
@@ -81,7 +77,7 @@ class CFLRUAlgorithm:
 
     def evict(self):
         """
-        CFLRU 核心踢人邏輯：
+        CFLRU evict邏輯：
         在 LRU 端 (List 頭部) 的 Window 範圍內，優先找乾淨的踢。
         回傳: 被踢掉的 Page 物件
         """
